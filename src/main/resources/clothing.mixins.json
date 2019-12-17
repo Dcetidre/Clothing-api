@@ -1,0 +1,13 @@
+{
+  "required" : true,
+  "package" : "com.software.ddk.clothing.mixins",
+  "compatibilityLevel" : "JAVA_8",
+  "mixins" : [
+    "MobEntityMixin",
+    "PlayerEntityRendererMixin",
+    "HeadFeatureRendererMixin"
+  ],
+  "injectors" : {
+    "defaultRequire" : 1
+  }
+}
