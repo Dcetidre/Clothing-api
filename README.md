@@ -56,7 +56,7 @@ textures are basically player skin textures.
 
 * You can render a custom blockmodel overriding customModel and renderData:
         
-        @Override
+            @Override
             public boolean customModel() {
                 return true;
             }
@@ -64,10 +64,10 @@ textures are basically player skin textures.
             @Override
             public ClothRenderData renderData() {
                 //create a ClothRenderData object and feed size and position of block model
-                ClothRenderData clothRenderData = new ClothRenderData(VoxedCraft.GALERA, EquipmentSlot.HEAD,
-                        1.0f, 1.0f, 1.0f, //size x y z
+                ClothRenderData clothRenderData = new ClothRenderData(Blocks.GLASS, EquipmentSlot.HEAD, //the block to render and equipment slot
+                        1.1f, 1.1f, 1.1f, //size x y z
                         -0.5f, -0.5f, -0.5f); //position x y z
                 clothRenderData.setRotable(true); //enable rotation
-                clothRenderData.setRotation(180.0f, 0.0f, 0.0f); //rotation x y z
+                clothRenderData.setRotation(0.0f, 0.0f, 0.0f); //rotation x y z
                 return clothRenderData; //return object.
             }
