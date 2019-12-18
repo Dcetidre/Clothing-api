@@ -3,8 +3,8 @@
   "id": "clothing",
   "version": "${version}",
 
-  "name": "Wither Sword Mod",
-  "description": "Api for creating clothing armor like system",
+  "name": "Clothing Api",
+  "description": "library for rendering textures over the skin layer",
   "authors": [
     "DiegoDDK"
   ],
@@ -13,7 +13,7 @@
     "sources": "https://github.com/Diegoddk/Wither-Sword-Mod"
   },
 
-  "license": "CC0-1.0",
+  "license": "Unlicense",
   "icon": "assets/clothing/icon.png",
 
   "environment": "*",

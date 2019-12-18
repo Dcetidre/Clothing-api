@@ -26,7 +26,7 @@ basic use sample:
         }
     }
  
-* textures needs to be located at:
+* textures need to be located at:
         
         /assets/mod-id/textures/clothes/cloth_myclothid.png
         /assets/mod-id/textures/clothes/cloth_myclothid_slim.png

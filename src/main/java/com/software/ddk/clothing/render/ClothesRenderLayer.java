@@ -112,7 +112,6 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 		biped.leftPantLeg.visible = equip[3];
 		biped.rightPantLeg.visible = equip[3];
 
-		System.out.println("rgb: " + r + " " + g + " " + b);
 		biped.render(matrices, myVertexConsumer, light, OverlayTexture.DEFAULT_UV, r, g, b, 1.0F);
 		((ICloth) stack.getItem()).render(biped, stack, matrices, vertexConsumers, living, light, OverlayTexture.DEFAULT_UV, headYaw, headPitch);
 		renderBlockModel(biped, stack, matrices, vertexConsumers, living, light, OverlayTexture.DEFAULT_UV, headYaw, headPitch);
