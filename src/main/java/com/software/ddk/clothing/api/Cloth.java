@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 
-
+@Deprecated
 public class Cloth extends Item {
     private EquipmentSlot slot;
     private String id;

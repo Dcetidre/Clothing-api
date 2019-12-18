@@ -17,6 +17,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.DyeItem;
+import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Quaternion;
@@ -28,10 +30,9 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 	//0 head 1 chest 2 legs 3 feet
 	private boolean[] equip = new boolean[]{false, false, false, false};
 	private boolean[] overlay = new boolean[]{false, false, false, false};
-	//private Vector3f VECTOR_Y = new Vector3f(0,1,0);
-	//private Vector3f VECTOR_X = new Vector3f(1,0,0);
-    //private Vector3f VECTOR_Z = new Vector3f(0,0,1);
-
+	float r = 1.0f;
+	float g = 1.0f;
+	float b = 1.0f;
 
     public ClothesRenderLayer(FeatureRendererContext<T, M> render, boolean slim) {
 		super(render);
@@ -83,6 +84,13 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 						RenderLayer.getEntityCutoutNoCull(
 								this.getTexture(stack)), false, false);
 
+		if (stack.getItem() instanceof DyeableItem){
+			int color = ((DyeableItem) stack.getItem()).getColor(stack);
+			r = (float)(color >> 16 & 255) / 255.0F;
+			g = (float)(color >> 8 & 255) / 255.0F;
+			b = (float)(color & 255) / 255.0F;
+		}
+
 		PlayerEntityModel biped = ((PlayerEntityModel) this.getContextModel());
 
 		//head
@@ -104,7 +112,8 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 		biped.leftPantLeg.visible = equip[3];
 		biped.rightPantLeg.visible = equip[3];
 
-		biped.render(matrices, myVertexConsumer, light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+		System.out.println("rgb: " + r + " " + g + " " + b);
+		biped.render(matrices, myVertexConsumer, light, OverlayTexture.DEFAULT_UV, r, g, b, 1.0F);
 		((ICloth) stack.getItem()).render(biped, stack, matrices, vertexConsumers, living, light, OverlayTexture.DEFAULT_UV, headYaw, headPitch);
 		renderBlockModel(biped, stack, matrices, vertexConsumers, living, light, OverlayTexture.DEFAULT_UV, headYaw, headPitch);
 		matrices.pop();

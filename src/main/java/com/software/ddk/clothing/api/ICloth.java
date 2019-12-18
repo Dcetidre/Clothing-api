@@ -1,6 +1,5 @@
 package com.software.ddk.clothing.api;
 
-import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -37,6 +36,5 @@ public interface ICloth{
     }
 
     public default void render(BipedEntityModel model, ItemStack stack, MatrixStack matrices, VertexConsumerProvider vertexConsumers, LivingEntity living, int light, int overlay, float headYaw, float headPitch){
-
     }
 }
