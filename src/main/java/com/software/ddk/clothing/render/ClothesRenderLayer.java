@@ -30,9 +30,9 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 	//0 head 1 chest 2 legs 3 feet
 	private boolean[] equip = new boolean[]{false, false, false, false};
 	private boolean[] overlay = new boolean[]{false, false, false, false};
-	float r = 1.0f;
-	float g = 1.0f;
-	float b = 1.0f;
+	private float r = 1.0f;
+	private float g = 1.0f;
+	private float b = 1.0f;
 
     public ClothesRenderLayer(FeatureRendererContext<T, M> render, boolean slim) {
 		super(render);
@@ -130,11 +130,9 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 	}
 
 	private void renderBySlot(ClothRenderData renderData, MatrixStack matrices, EquipmentSlot slot,T living, PlayerEntityModel model, float headYaw, float headPitch){
+    	//based on trinkets.
     	if (slot.equals(EquipmentSlot.HEAD)){
             if (living.isInSwimmingPose() || living.isFallFlying()){
-                //matrices.multiply(new Quaternion(VECTOR_Z, model.head.roll, true));
-                //matrices.multiply(new Quaternion(VECTOR_Y, headYaw, true));
-                //matrices.multiply(new Quaternion(VECTOR_X, -45.0F, true));
                 matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(model.head.roll));
 				matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(headYaw));
 				matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-45.0F));
@@ -144,29 +142,21 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
                 }
             }
 
-            //matrices.multiply(new Quaternion(VECTOR_Y, headYaw, true));
-            //matrices.multiply(new Quaternion(VECTOR_X, headPitch, true));
             matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(headYaw));
 			matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(headPitch));
-
 			matrices.translate(0.0f, -0.25f, 0.0f);
 
         } else if (slot.equals(EquipmentSlot.CHEST)){
             if (living.isInSneakingPose() && !model.riding && !living.isSwimming()){
                 matrices.translate(0.0f, 0.2f, 0.0f);
-                //matrices.multiply(new Quaternion(VECTOR_X, model.torso.pitch * 57.5f, true));
                 matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(model.torso.pitch * 57.5f));
             }
-            //matrices.multiply(new Quaternion(VECTOR_Y, model.torso.yaw * 57.5f, true));
             matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(model.torso.yaw * 57.5f));
             matrices.translate(0.0f, 0.4f, -0.16f);
         }
 
         //custom
 		if (renderData.isRotable()){
-			//matrices.multiply(new Quaternion(VECTOR_X, renderData.getRotation().getX(), true));
-			//matrices.multiply(new Quaternion(VECTOR_Y, renderData.getRotation().getY(), true));
-			//matrices.multiply(new Quaternion(VECTOR_Z, renderData.getRotation().getZ(), true));
 			matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(renderData.getRotation().getX()));
 			matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(renderData.getRotation().getY()));
 			matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(renderData.getRotation().getZ()));

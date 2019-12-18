@@ -1,6 +1,5 @@
 package com.software.ddk.clothing.mixins;
 
-import com.software.ddk.clothing.api.Cloth;
 import com.software.ddk.clothing.api.ICloth;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
