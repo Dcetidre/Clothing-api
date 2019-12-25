@@ -9,8 +9,8 @@
     "DiegoDDK"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/Diegoddk/Wither-Sword-Mod"
+    "homepage": "https://github.com/Diegoddk/Clothing-api",
+    "sources": "https://github.com/Diegoddk/Clothing-api"
   },
 
   "license": "Unlicense",
@@ -36,5 +36,9 @@
   },
   "suggests": {
     "flamingo": "*"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:clientsideOnly": false
   }
 }

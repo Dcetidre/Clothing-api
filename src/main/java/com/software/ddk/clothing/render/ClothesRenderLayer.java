@@ -17,13 +17,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.DyeItem;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Quaternion;
-
-import java.util.Vector;
 
 public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
 	private boolean slim;
@@ -79,10 +75,9 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 		matrices.push();
 		matrices.scale(1.0f, 1.0f, 1.0f);
 
-		VertexConsumer myVertexConsumer = ItemRenderer
-				.getArmorVertexConsumer(vertexConsumers,
-						RenderLayer.getEntityCutoutNoCull(
-								this.getTexture(stack)), false, false);
+		VertexConsumer myVertexConsumer = ItemRenderer.getArmorVertexConsumer(
+				vertexConsumers, RenderLayer.getEntityCutoutNoCull(
+						this.getTexture(stack)), false, false);
 
 		if (stack.getItem() instanceof DyeableItem){
 			int color = ((DyeableItem) stack.getItem()).getColor(stack);
@@ -92,7 +87,6 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 		}
 
 		PlayerEntityModel biped = ((PlayerEntityModel) this.getContextModel());
-
 		//head
 		biped.head.visible = equip[0];
 		biped.helmet.visible = overlay[0];
@@ -103,15 +97,14 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 		biped.jacket.visible = overlay[1];
 		biped.rightSleeve.visible = overlay[1];
 		biped.leftSleeve.visible = overlay[1];
-
 		//leggings
 		biped.leftLeg.visible = equip[2];
 		biped.rightLeg.visible = equip[2];
-
 		//boots
 		biped.leftPantLeg.visible = equip[3];
 		biped.rightPantLeg.visible = equip[3];
 
+		//biped.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(getTexture(stack))), light, OverlayTexture.DEFAULT_UV, r, g, b, 1.0F);
 		biped.render(matrices, myVertexConsumer, light, OverlayTexture.DEFAULT_UV, r, g, b, 1.0F);
 		((ICloth) stack.getItem()).render(biped, stack, matrices, vertexConsumers, living, light, OverlayTexture.DEFAULT_UV, headYaw, headPitch);
 		renderBlockModel(biped, stack, matrices, vertexConsumers, living, light, OverlayTexture.DEFAULT_UV, headYaw, headPitch);
@@ -122,10 +115,8 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 		if (((ICloth)stack.getItem()).customModel()){
             ClothRenderData renderData = ((ICloth)stack.getItem()).renderData();
 			Block block = renderData.getRenderBlock();
-
 			renderBySlot(renderData, matrices, ((ICloth) stack.getItem()).slotType(), living, biped, headYaw, headPitch);
 			MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(block.getDefaultState(), matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
-
 		}
 	}
 
