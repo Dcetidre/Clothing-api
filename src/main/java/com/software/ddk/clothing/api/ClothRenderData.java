@@ -1,10 +1,13 @@
 package com.software.ddk.clothing.api;
 
+import net.fabricmc.loader.util.sat4j.core.Vec;
 import net.minecraft.block.Block;
+import net.minecraft.client.util.math.Vector3d;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.EquipmentSlot;
 
 public class ClothRenderData {
+    //todo simplify/clean everything.
     private Block block;
     private EquipmentSlot slot;
     private float scaleX, scaleY, scaleZ;
@@ -15,7 +18,6 @@ public class ClothRenderData {
     public static final Vector3f DEFAULT_POS = new Vector3f(-0.5f, -0.5f, -0.5f);
 
     public ClothRenderData(Block block, EquipmentSlot slot, float scaleX, float scaleY, float scaleZ, float tX, float tY, float tZ){
-        //todo cambiar variables a Vector3f;
         this.block = block;
         this.slot = slot;
         this.scaleX = scaleX;
@@ -24,6 +26,17 @@ public class ClothRenderData {
         this.tX = tX;
         this.tY = tY;
         this.tZ = tZ;
+    }
+
+    public ClothRenderData(Block block, EquipmentSlot slot, Vector3f scale, Vector3f translate){
+        this.block = block;
+        this.slot = slot;
+        this.scaleX = scale.getX();
+        this.scaleY = scale.getY();
+        this.scaleZ = scale.getZ();
+        this.tX = translate.getX();
+        this.tY = translate.getY();
+        this.tZ = translate.getZ();
     }
 
     public boolean isRotable(){
@@ -36,6 +49,10 @@ public class ClothRenderData {
 
     public void setRotation(float x, float y, float z){
         this.rotation = new Vector3f(x, y, z);
+    }
+
+    public void setRotationVector(Vector3f rotation){
+        this.rotation = rotation;
     }
 
     public Vector3f getRotation(){
@@ -62,6 +79,10 @@ public class ClothRenderData {
         return this.scaleZ;
     }
 
+    public Vector3f getScaleVector(){
+        return new Vector3f(this.scaleX, this.scaleY, this.scaleZ);
+    }
+
     public float gettX() {
         return this.tX;
     }
@@ -72,5 +93,9 @@ public class ClothRenderData {
 
     public float gettZ() {
         return this.tZ;
+    }
+
+    public Vector3f getTranslateVector(){
+        return new Vector3f(this.tX, this.tY, this.tZ);
     }
 }

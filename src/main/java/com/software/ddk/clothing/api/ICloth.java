@@ -27,10 +27,19 @@ public interface ICloth{
         return false;
     }
 
+    public default boolean[][] equipLayers(){
+        return new boolean[][]{
+                {false, false, false, false},
+                {false, false, false, false}
+        };
+    }
+
+    @Deprecated
     public default boolean[] overlay(){
         return new boolean[]{false, false, false, false};
     }
 
+    @Deprecated
     public default boolean[] equip(){
         return new boolean[]{false, false, false, false};
     }

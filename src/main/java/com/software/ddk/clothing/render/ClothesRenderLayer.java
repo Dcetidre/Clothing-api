@@ -24,11 +24,8 @@ import net.minecraft.util.Identifier;
 public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
 	private boolean slim;
 	//0 head 1 chest 2 legs 3 feet
-	private boolean[] equip = new boolean[]{false, false, false, false};
-	private boolean[] overlay = new boolean[]{false, false, false, false};
-	private float r = 1.0f;
-	private float g = 1.0f;
-	private float b = 1.0f;
+	private boolean[][] equipLayers = new boolean[][]{{false, false, false, false},{false, false, false, false}};
+	private float[] COLOR = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
 
     public ClothesRenderLayer(FeatureRendererContext<T, M> render, boolean slim) {
 		super(render);
@@ -43,35 +40,34 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 		ItemStack feet = living.getEquippedStack(EquipmentSlot.FEET);
 
 		if (!head.isEmpty() && head.getItem() instanceof ICloth){
-			boolean[][] render = checkRender(0, head, equip, overlay);
-			doRendering(matrices, vertexConsumers, light, living, limbAngle, limbDistance, tickDelta, customAngle, headYaw, headPitch, head, render[0], render[1]);
+			boolean[][] render = checkRender(0, head, equipLayers);
+			doRendering(matrices, vertexConsumers, light, living, limbAngle, limbDistance, tickDelta, customAngle, headYaw, headPitch, head, render);
 		}
 		if (!chest.isEmpty() && chest.getItem() instanceof ICloth){
-			boolean[][] render = checkRender(1, chest, equip, overlay);
-			doRendering(matrices, vertexConsumers, light, living, limbAngle, limbDistance, tickDelta, customAngle, headYaw, headPitch, chest, render[0], render[1]);
+			boolean[][] render = checkRender(1, chest, equipLayers);
+			doRendering(matrices, vertexConsumers, light, living, limbAngle, limbDistance, tickDelta, customAngle, headYaw, headPitch, chest, render);
 		}
 		if (!legs.isEmpty() && legs.getItem() instanceof ICloth){
-			boolean[][] render = checkRender(2, legs, equip, overlay);
-			doRendering(matrices, vertexConsumers, light, living, limbAngle, limbDistance, tickDelta, customAngle, headYaw, headPitch, legs, render[0], render[1]);
+			boolean[][] render = checkRender(2, legs, equipLayers);
+			doRendering(matrices, vertexConsumers, light, living, limbAngle, limbDistance, tickDelta, customAngle, headYaw, headPitch, legs, render);
 		}
 		if (!feet.isEmpty() && feet.getItem() instanceof ICloth){
-			boolean[][] render = checkRender(3, feet, equip, overlay);
-			doRendering(matrices, vertexConsumers, light, living, limbAngle, limbDistance, tickDelta, customAngle, headYaw, headPitch, feet, render[0], render[1]);
+			boolean[][] render = checkRender(3, feet, equipLayers);
+			doRendering(matrices, vertexConsumers, light, living, limbAngle, limbDistance, tickDelta, customAngle, headYaw, headPitch, feet, render);
 		}
 	}
 
-	private boolean[][] checkRender(int index, ItemStack stack, boolean[] equip, boolean[] overlay){
+	private boolean[][] checkRender(int index, ItemStack stack, boolean[][] equipLayers){
 		if (((ICloth) stack.getItem()).customEquip()){
-			equip = ((ICloth) stack.getItem()).equip();
-			overlay = ((ICloth) stack.getItem()).overlay();
+			equipLayers= ((ICloth) stack.getItem()).equipLayers();
 		} else {
-			equip[index] = true;
-			overlay[index] = true;
+			equipLayers[0][index] = true;
+			equipLayers[1][index] = true;
 		}
-		return new boolean[][]{equip, overlay};
+		return equipLayers;
 	}
 
-	private void doRendering(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T living, float limbAngle, float limbDistance, float tickDelta, float customAngle, float headYaw, float headPitch, ItemStack stack, boolean[] equip, boolean[] overlay){
+	private void doRendering(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T living, float limbAngle, float limbDistance, float tickDelta, float customAngle, float headYaw, float headPitch, ItemStack stack, boolean[][] equipLayers){
 		matrices.push();
 		matrices.scale(1.0f, 1.0f, 1.0f);
 
@@ -81,31 +77,31 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 
 		if (stack.getItem() instanceof DyeableItem){
 			int color = ((DyeableItem) stack.getItem()).getColor(stack);
-			r = (float)(color >> 16 & 255) / 255.0F;
-			g = (float)(color >> 8 & 255) / 255.0F;
-			b = (float)(color & 255) / 255.0F;
+			COLOR[0] = (float)(color >> 16 & 255) / 255.0F;
+			COLOR[1] = (float)(color >> 8 & 255) / 255.0F;
+			COLOR[2] = (float)(color & 255) / 255.0F;
 		}
 
 		PlayerEntityModel biped = ((PlayerEntityModel) this.getContextModel());
 		//head
-		biped.head.visible = equip[0];
-		biped.helmet.visible = overlay[0];
+		biped.head.visible = equipLayers[0][0];
+		biped.helmet.visible = equipLayers[1][0];
 		//chest
-		biped.torso.visible = equip[1];
-		biped.rightArm.visible = equip[1];
-		biped.leftArm.visible = equip[1];
-		biped.jacket.visible = overlay[1];
-		biped.rightSleeve.visible = overlay[1];
-		biped.leftSleeve.visible = overlay[1];
+		biped.torso.visible = equipLayers[0][1];
+		biped.rightArm.visible = equipLayers[0][1];
+		biped.leftArm.visible = equipLayers[0][1];
+		biped.jacket.visible = equipLayers[1][1];
+		biped.rightSleeve.visible = equipLayers[1][1];
+		biped.leftSleeve.visible = equipLayers[1][1];
 		//leggings
-		biped.leftLeg.visible = equip[2];
-		biped.rightLeg.visible = equip[2];
+		biped.leftLeg.visible = equipLayers[0][3];
+		biped.rightLeg.visible = equipLayers[0][3];
 		//boots
-		biped.leftPantLeg.visible = equip[3];
-		biped.rightPantLeg.visible = equip[3];
+		biped.leftPantLeg.visible = equipLayers[0][2];
+		biped.rightPantLeg.visible = equipLayers[0][2];
 
 		//biped.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(getTexture(stack))), light, OverlayTexture.DEFAULT_UV, r, g, b, 1.0F);
-		biped.render(matrices, myVertexConsumer, light, OverlayTexture.DEFAULT_UV, r, g, b, 1.0F);
+		biped.render(matrices, myVertexConsumer, light, OverlayTexture.DEFAULT_UV, COLOR[0], COLOR[1], COLOR[2], COLOR[3]);
 		((ICloth) stack.getItem()).render(biped, stack, matrices, vertexConsumers, living, light, OverlayTexture.DEFAULT_UV, headYaw, headPitch);
 		renderBlockModel(biped, stack, matrices, vertexConsumers, living, light, OverlayTexture.DEFAULT_UV, headYaw, headPitch);
 		matrices.pop();

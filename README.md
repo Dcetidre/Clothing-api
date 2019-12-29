@@ -1,4 +1,4 @@
-# Clothing-api
+# Clothing Api
 Library for adding skin layer textures as dressable items.
 
 basic use sample:
@@ -34,7 +34,7 @@ basic use sample:
 textures are basically player skin textures.
 
 
-* You can render custom texture parts overriding customEquip as well equip and overlay (will change later.):
+* You can render custom texture parts overriding customEquip() and equipLayers():
     
         @Override
         public boolean customEquip() {
@@ -42,15 +42,13 @@ textures are basically player skin textures.
         }
 
         @Override
-        public boolean[] equip() {
-            //head chest legs feet
-            return new boolean[]{false, false, false, false};
-        }
-
-        @Override
-        public boolean[] overlay() {
-            //helmet jacket pants boots
-            return new boolean[]{false, false, false, false};
+        public boolean[][] equipLayers() {
+            return new boolean[][]{
+                       //head chest legs boots
+                       {false, false, false, false},
+                       //helmet jacket pants boots_over
+                       {false, false, false, false}
+            };
         }
 
 

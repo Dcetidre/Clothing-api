@@ -14,6 +14,19 @@ public class DummyItem extends Item implements ICloth, DyeableItem {
     }
 
     @Override
+    public boolean customEquip() {
+        return true;
+    }
+
+    @Override
+    public boolean[][] equipLayers() {
+        return new boolean[][]{
+                {false, true, false, false},
+                {false, false, false, false}
+        };
+    }
+
+    @Override
     public EquipmentSlot slotType() {
         return EquipmentSlot.CHEST;
     }
