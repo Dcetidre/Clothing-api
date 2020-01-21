@@ -1,18 +1,27 @@
 package com.software.ddk.clothing.render;
 
+import com.software.ddk.clothing.ClothingApi;
 import com.software.ddk.clothing.api.ClothRenderData;
 import com.software.ddk.clothing.api.ICloth;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.BlockModelRenderer;
+import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.EquipmentSlot;
@@ -20,6 +29,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockRenderView;
+import org.lwjgl.opengl.GL14;
 
 public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
 	private boolean slim;
@@ -110,9 +122,19 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 	private void renderBlockModel(PlayerEntityModel biped, ItemStack stack, MatrixStack matrices, VertexConsumerProvider vertexConsumer,T living, int light, int overlay, float headYaw, float headPitch){
 		if (((ICloth)stack.getItem()).customModel()){
             ClothRenderData renderData = ((ICloth)stack.getItem()).renderData();
-			Block block = renderData.getRenderBlock();
-			renderBySlot(renderData, matrices, ((ICloth) stack.getItem()).slotType(), living, biped, headYaw, headPitch);
-			MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(block.getDefaultState(), matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
+            switch (renderData.getRenderMode()){
+                case 0:
+                    //block render
+                    Block block = renderData.getRenderBlock();
+                    renderBySlot(renderData, matrices, ((ICloth) stack.getItem()).slotType(), living, biped, headYaw, headPitch);
+                    MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(block.getDefaultState(), matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
+                    break;
+                case 1:
+                    //item render
+                    renderBySlot(renderData, matrices, ((ICloth) stack.getItem()).slotType(), living, biped, headYaw, headPitch);
+                    MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumer);
+                    break;
+            }
 		}
 	}
 

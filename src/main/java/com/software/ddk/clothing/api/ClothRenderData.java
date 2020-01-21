@@ -1,8 +1,6 @@
 package com.software.ddk.clothing.api;
 
-import net.fabricmc.loader.util.sat4j.core.Vec;
 import net.minecraft.block.Block;
-import net.minecraft.client.util.math.Vector3d;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.EquipmentSlot;
 
@@ -12,13 +10,26 @@ public class ClothRenderData {
     private EquipmentSlot slot;
     private float scaleX, scaleY, scaleZ;
     private float tX, tY, tZ;
-    private boolean rotate = false;
     private Vector3f rotation;
+    private boolean rotate = false;
+    private int rendermode = 0;
     public static final Vector3f DEFAULT_SIZE = new Vector3f(0.5f, 0.5f, 0.5f);
     public static final Vector3f DEFAULT_POS = new Vector3f(-0.5f, -0.5f, -0.5f);
+    public static final int RENDER_BLOCKMODEL = 0;
+    public static final int RENDER_ITEMMODEL = 1;
 
     public ClothRenderData(Block block, EquipmentSlot slot, float scaleX, float scaleY, float scaleZ, float tX, float tY, float tZ){
         this.block = block;
+        this.slot = slot;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.scaleZ = scaleZ;
+        this.tX = tX;
+        this.tY = tY;
+        this.tZ = tZ;
+    }
+
+    public ClothRenderData(EquipmentSlot slot, float scaleX, float scaleY, float scaleZ, float tX, float tY, float tZ){
         this.slot = slot;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
@@ -37,6 +48,14 @@ public class ClothRenderData {
         this.tX = translate.getX();
         this.tY = translate.getY();
         this.tZ = translate.getZ();
+    }
+
+    public int getRenderMode(){
+        return this.rendermode;
+    }
+
+    public void setRenderMode(int mode){
+        this.rendermode = mode;
     }
 
     public boolean isRotable(){

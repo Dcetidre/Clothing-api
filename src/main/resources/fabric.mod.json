@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Clothing Api",
-  "description": "library for rendering textures over the skin layer",
+  "description": "library for rendering textures/models over the skin layer",
   "authors": [
     "DiegoDDK"
   ],
