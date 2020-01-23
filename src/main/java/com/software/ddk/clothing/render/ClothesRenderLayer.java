@@ -1,27 +1,19 @@
 package com.software.ddk.clothing.render;
 
-import com.software.ddk.clothing.ClothingApi;
 import com.software.ddk.clothing.api.ClothRenderData;
 import com.software.ddk.clothing.api.ICloth;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.BlockModelRenderer;
-import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.EquipmentSlot;
@@ -29,17 +21,14 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
-import org.lwjgl.opengl.GL14;
 
 public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>> extends FeatureRenderer<T, M> {
 	private boolean slim;
 	//0 head 1 chest 2 legs 3 feet
 	private boolean[][] equipLayers = new boolean[][]{{false, false, false, false},{false, false, false, false}};
-	private float[] COLOR = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
+	private final float[] DEFAULT_COLOR = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
 
-    public ClothesRenderLayer(FeatureRendererContext<T, M> render, boolean slim) {
+	public ClothesRenderLayer(FeatureRendererContext<T, M> render, boolean slim) {
 		super(render);
 		this.slim = slim;
 	}
@@ -82,16 +71,23 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 	private void doRendering(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T living, float limbAngle, float limbDistance, float tickDelta, float customAngle, float headYaw, float headPitch, ItemStack stack, boolean[][] equipLayers){
 		matrices.push();
 		matrices.scale(1.0f, 1.0f, 1.0f);
+		boolean multiLayer = ((ICloth) stack.getItem()).multiLayer();
+		boolean applyGlint = ((ICloth) stack.getItem()).applyGlint();
+		float[] COLOR, COLOROVERLAY;
 
-		VertexConsumer myVertexConsumer = ItemRenderer.getArmorVertexConsumer(
+		VertexConsumer textureLayer0 = ItemRenderer.getArmorVertexConsumer(
 				vertexConsumers, RenderLayer.getEntityCutoutNoCull(
-						this.getTexture(stack)), false, false);
+				this.getTexture(stack, 0)), false, applyGlint);
 
 		if (stack.getItem() instanceof DyeableItem){
 			int color = ((DyeableItem) stack.getItem()).getColor(stack);
-			COLOR[0] = (float)(color >> 16 & 255) / 255.0F;
-			COLOR[1] = (float)(color >> 8 & 255) / 255.0F;
-			COLOR[2] = (float)(color & 255) / 255.0F;
+			int colorOverlay = ((ICloth) stack.getItem()).getColorOverlay(stack);
+			COLOR = getColorFloat(color);
+			COLOROVERLAY = getColorFloat(colorOverlay);
+		} else {
+			//reset or set tints to default values.
+			COLOR = DEFAULT_COLOR.clone();
+			COLOROVERLAY = DEFAULT_COLOR.clone();
 		}
 
 		PlayerEntityModel biped = ((PlayerEntityModel) this.getContextModel());
@@ -112,8 +108,16 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
 		biped.leftPantLeg.visible = equipLayers[0][2];
 		biped.rightPantLeg.visible = equipLayers[0][2];
 
-		//biped.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(getTexture(stack))), light, OverlayTexture.DEFAULT_UV, r, g, b, 1.0F);
-		biped.render(matrices, myVertexConsumer, light, OverlayTexture.DEFAULT_UV, COLOR[0], COLOR[1], COLOR[2], COLOR[3]);
+		biped.render(matrices, textureLayer0, light, OverlayTexture.DEFAULT_UV, COLOR[0], COLOR[1], COLOR[2], COLOR[3]);
+
+		//overlay layer rendering.
+		if (multiLayer){
+			VertexConsumer textureLayer1 = ItemRenderer.getArmorVertexConsumer(
+					vertexConsumers, RenderLayer.getEntityCutoutNoCull(
+					this.getTexture(stack, 1)), false, applyGlint);
+			biped.render(matrices, textureLayer1, light, OverlayTexture.DEFAULT_UV, COLOROVERLAY[0], COLOROVERLAY[1], COLOROVERLAY[2], COLOROVERLAY[3]);
+		}
+
 		((ICloth) stack.getItem()).render(biped, stack, matrices, vertexConsumers, living, light, OverlayTexture.DEFAULT_UV, headYaw, headPitch);
 		renderBlockModel(biped, stack, matrices, vertexConsumers, living, light, OverlayTexture.DEFAULT_UV, headYaw, headPitch);
 		matrices.pop();
@@ -174,13 +178,22 @@ public class ClothesRenderLayer<T extends LivingEntity, M extends EntityModel<T>
         matrices.translate(renderData.gettX(), renderData.gettY(), renderData.gettZ());
     }
 
-	private Identifier getTexture(ItemStack stack) {
+    private float[] getColorFloat(int color){
+		return new float[]{
+				(float)(color >> 16 & 255) / 255.0F,
+				(float)(color >> 8 & 255) / 255.0F,
+				(float)(color & 255) / 255.0F,
+				1.0f
+		};
+	}
+
+	private Identifier getTexture(ItemStack stack, int layer) {
 		String cloth_id = ((ICloth) stack.getItem()).clothId();
 		String cloth_modid = ((ICloth) stack.getItem()).modId();
 		String modifier = "";
 		if (slim){
 			modifier = "_slim";
 		}
-		return new Identifier(cloth_modid, "textures/clothes/cloth_" + cloth_id + modifier + ".png");
+		return new Identifier(cloth_modid, "textures/clothes/cloth_" + cloth_id + modifier + "_layer" + layer +".png");
 	}
 }

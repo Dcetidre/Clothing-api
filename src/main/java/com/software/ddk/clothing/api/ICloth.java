@@ -9,41 +9,43 @@ import net.minecraft.item.ItemStack;
 
 public interface ICloth{
 
-    public EquipmentSlot slotType();
+    EquipmentSlot slotType();
 
-    public String clothId();
+    String clothId();
 
-    public String modId();
+    String modId();
 
-    public default ClothRenderData renderData(){
+    default ClothRenderData renderData(){
         return null;
     }
 
-    public default boolean customModel(){
+    default boolean customModel(){
         return false;
     }
 
-    public default boolean customEquip(){
+    default boolean customEquip(){
         return false;
     }
 
-    public default boolean[][] equipLayers(){
+    default boolean multiLayer() {
+        return false;
+    }
+
+    default int getColorOverlay(ItemStack stack){
+        return 0xffffff;
+    }
+
+    default boolean applyGlint(){
+        return false;
+    }
+
+    default boolean[][] equipLayers(){
         return new boolean[][]{
                 {false, false, false, false},
                 {false, false, false, false}
         };
     }
 
-    @Deprecated
-    public default boolean[] overlay(){
-        return new boolean[]{false, false, false, false};
-    }
-
-    @Deprecated
-    public default boolean[] equip(){
-        return new boolean[]{false, false, false, false};
-    }
-
-    public default void render(BipedEntityModel model, ItemStack stack, MatrixStack matrices, VertexConsumerProvider vertexConsumers, LivingEntity living, int light, int overlay, float headYaw, float headPitch){
+    default void render(BipedEntityModel model, ItemStack stack, MatrixStack matrices, VertexConsumerProvider vertexConsumers, LivingEntity living, int light, int overlay, float headYaw, float headPitch){
     }
 }
