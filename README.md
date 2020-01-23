@@ -28,10 +28,10 @@ basic use sample:
  
 * textures need to be located at:
         
-        /assets/mod-id/textures/clothes/cloth_myclothid.png
-        /assets/mod-id/textures/clothes/cloth_myclothid_slim.png
+        /assets/mod-id/textures/clothes/cloth_myclothid_layer0.png
+        /assets/mod-id/textures/clothes/cloth_myclothid_slim_layer0.png
         
-textures are basically player skin textures.
+note: when multiLayer() is enabled, the respective "_layer1" files needs to be located too. Textures are basically player skin textures.
 
 
 * You can render custom texture parts overriding customEquip() and equipLayers():
