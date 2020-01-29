@@ -6,6 +6,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
 public interface ICloth{
 
@@ -32,7 +33,12 @@ public interface ICloth{
     }
 
     default int getColorOverlay(ItemStack stack){
-        return 0xffffff;
+        CompoundTag compoundTag = stack.getSubTag("display");
+        return compoundTag != null && compoundTag.contains("coloroverlay", 99) ? compoundTag.getInt("coloroverlay") : 0xffffff;
+    }
+
+    default void setColorOverlay(ItemStack stack, int colorOverlay){
+        stack.getOrCreateSubTag("display").putInt("coloroverlay", colorOverlay);
     }
 
     default boolean applyGlint(){

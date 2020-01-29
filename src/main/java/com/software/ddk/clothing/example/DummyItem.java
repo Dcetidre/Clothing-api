@@ -39,7 +39,7 @@ public class DummyItem extends Item implements ICloth, DyeableItem {
 
     @Override
     public int getColorOverlay(ItemStack stack) {
-        return 0xffffff;
+        return 0x00ff00;
     }
 
     @Override

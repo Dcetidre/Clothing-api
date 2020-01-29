@@ -1,7 +1,6 @@
 package com.software.ddk.clothing;
 
 import com.software.ddk.clothing.example.DummyItem;
-import com.software.ddk.clothing.example.DummyItem2;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
