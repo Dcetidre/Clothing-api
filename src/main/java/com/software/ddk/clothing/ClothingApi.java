@@ -9,7 +9,7 @@ import net.minecraft.util.registry.Registry;
 public class ClothingApi implements ModInitializer {
     public static final String MOD_ID = "clothing";
 
-    //public static final Item DUMMY = new DummyItem();
+    public static final Item DUMMY = new DummyItem();
     //public static final Item DUMMY2 = new DummyItem2();
 
     @Override

@@ -9,11 +9,11 @@
     "DiegoDDK"
   ],
   "contact": {
-    "homepage": "https://github.com/Diegoddk/Clothing-api",
+    "homepage": "https://github.com/Diegoddk/",
     "sources": "https://github.com/Diegoddk/Clothing-api"
   },
 
-  "license": "Unlicense",
+  "license": "MIT",
   "icon": "assets/clothing/icon.png",
 
   "environment": "*",

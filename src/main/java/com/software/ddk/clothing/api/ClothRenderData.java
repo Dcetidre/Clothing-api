@@ -19,6 +19,7 @@ public class ClothRenderData {
     public static final int RENDER_ITEMMODEL = 1;
 
     public ClothRenderData(Block block, EquipmentSlot slot, float scaleX, float scaleY, float scaleZ, float tX, float tY, float tZ){
+        setRenderMode(RENDER_BLOCKMODEL);
         this.block = block;
         this.slot = slot;
         this.scaleX = scaleX;
@@ -30,6 +31,7 @@ public class ClothRenderData {
     }
 
     public ClothRenderData(EquipmentSlot slot, float scaleX, float scaleY, float scaleZ, float tX, float tY, float tZ){
+        setRenderMode(RENDER_ITEMMODEL);
         this.slot = slot;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
@@ -40,11 +42,47 @@ public class ClothRenderData {
     }
 
     public ClothRenderData(Block block, EquipmentSlot slot, Vector3f scale, Vector3f translate){
+        setRenderMode(RENDER_BLOCKMODEL);
         this.block = block;
         this.slot = slot;
         this.scaleX = scale.getX();
         this.scaleY = scale.getY();
         this.scaleZ = scale.getZ();
+        this.tX = translate.getX();
+        this.tY = translate.getY();
+        this.tZ = translate.getZ();
+    }
+
+    public ClothRenderData(EquipmentSlot slot){
+        setRenderMode(RENDER_ITEMMODEL);
+        this.slot = slot;
+        this.scaleX = DEFAULT_SIZE.getX();
+        this.scaleY = DEFAULT_SIZE.getY();
+        this.scaleZ = DEFAULT_SIZE.getZ();
+        this.tX = DEFAULT_POS.getX();
+        this.tY = DEFAULT_POS.getY();
+        this.tZ = DEFAULT_POS.getZ();
+    }
+
+    public void setSize(float x, float y, float z){
+        this.scaleX = x;
+        this.scaleY = y;
+        this.scaleZ = z;
+    }
+
+    public void setSize(Vector3f size){
+        this.scaleX = size.getX();
+        this.scaleY = size.getY();
+        this.scaleZ = size.getZ();
+    }
+
+    public void setTranslate(float x, float y, float z){
+        this.tX = x;
+        this.tY = y;
+        this.tZ = z;
+    }
+
+    public void setTranslate(Vector3f translate){
         this.tX = translate.getX();
         this.tY = translate.getY();
         this.tZ = translate.getZ();
