@@ -80,6 +80,7 @@ public class ClothesManager {
     }
 
     public static void renderOnStand(PlayerEntityModel model, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ItemStack stack, float[] COLOR, float[] COLOROVERLAY, boolean multiLayer, boolean applyGlint, boolean slim){
+        ICloth item = ((ICloth) stack.getItem());
         //base layer rendering
         matrices.push();
         VertexConsumer textureLayer0 = ItemRenderer.getArmorVertexConsumer(
@@ -92,7 +93,8 @@ public class ClothesManager {
             VertexConsumer textureLayer1 = ItemRenderer.getArmorVertexConsumer(
                     vertexConsumers, RenderLayer.getEntityCutoutNoCull(
                             ClothesManager.getTexture(stack, 1, slim)), false, applyGlint);
-            model.render(matrices, textureLayer1, light, OverlayTexture.DEFAULT_UV, COLOROVERLAY[0], COLOROVERLAY[1], COLOROVERLAY[2], COLOROVERLAY[3]);
+            int customLight = item.applyOverlayLight() ? item.overlayLight() : light;
+            model.render(matrices, textureLayer1, customLight, OverlayTexture.DEFAULT_UV, COLOROVERLAY[0], COLOROVERLAY[1], COLOROVERLAY[2], COLOROVERLAY[3]);
         }
         matrices.pop();
     }

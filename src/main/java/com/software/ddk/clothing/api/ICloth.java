@@ -52,6 +52,14 @@ public interface ICloth{
         };
     }
 
+    default boolean applyOverlayLight(){
+        return false;
+    }
+
+    default int overlayLight(){
+        return 128;
+    }
+
     default void render(BipedEntityModel model, ItemStack stack, MatrixStack matrices, VertexConsumerProvider vertexConsumers, LivingEntity living, int light, int overlay, float headYaw, float headPitch){
     }
 }

@@ -38,21 +38,23 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 	@Inject(method = "renderArm", at = @At("RETURN"))
 	private void onRenderArm(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity player, ModelPart arm, ModelPart sleeve, CallbackInfo ci){
 		ItemStack chest = player.getEquippedStack(EquipmentSlot.CHEST);
+		ICloth item = (ICloth) chest.getItem();
 
 		if (ClothesManager.isCloth(chest)){
 			float[][] colors = ClothesManager.getColors(chest);
 			//base layer rendering
 			VertexConsumer textureLayer0 = ItemRenderer.getArmorVertexConsumer(
 					vertexConsumers, RenderLayer.getEntityCutoutNoCull(
-							ClothesManager.getTexture(chest, 0, slim)), false, ((ICloth) chest.getItem()).applyGlint());
+							ClothesManager.getTexture(chest, 0, slim)), false, item.applyGlint());
 
 			arm.render(matrices, textureLayer0, light, OverlayTexture.DEFAULT_UV, colors[0][0], colors[0][1], colors[0][2], colors[0][3]);
 			//overlay layer rendering.
-			if (((ICloth) chest.getItem()).multiLayer()){
+			if (item.multiLayer()){
 				VertexConsumer textureLayer1 = ItemRenderer.getArmorVertexConsumer(
 						vertexConsumers, RenderLayer.getEntityCutoutNoCull(
-								ClothesManager.getTexture(chest, 1, slim)), false, ((ICloth) chest.getItem()).applyGlint());
-				arm.render(matrices, textureLayer1, light, OverlayTexture.DEFAULT_UV, colors[1][0], colors[1][1], colors[1][2], colors[1][3]);
+								ClothesManager.getTexture(chest, 1, slim)), false, item.applyGlint());
+				int customLight = item.applyOverlayLight() ? item.overlayLight() : light;
+				arm.render(matrices, textureLayer1, customLight, OverlayTexture.DEFAULT_UV, colors[1][0], colors[1][1], colors[1][2], colors[1][3]);
 			}
 		}
 	}
