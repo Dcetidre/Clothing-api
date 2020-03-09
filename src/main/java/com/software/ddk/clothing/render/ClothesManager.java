@@ -8,6 +8,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -97,6 +98,25 @@ public class ClothesManager {
             model.render(matrices, textureLayer1, customLight, OverlayTexture.DEFAULT_UV, COLOROVERLAY[0], COLOROVERLAY[1], COLOROVERLAY[2], COLOROVERLAY[3]);
         }
         matrices.pop();
+    }
+
+    public static void renderOnPlayer(PlayerEntityModel model, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity living, float headYaw, float headPitch, ItemStack stack, float[] COLOR, float[] COLOROVERLAY, boolean multiLayer, boolean applyGlint, boolean slim){
+        ICloth item = ((ICloth) stack.getItem());
+
+        //base layer rendering
+        VertexConsumer textureLayer0 = ItemRenderer.getArmorVertexConsumer(
+                vertexConsumers, RenderLayer.getEntityCutoutNoCull(
+                        ClothesManager.getTexture(stack, 0, slim)), false, applyGlint);
+
+        model.render(matrices, textureLayer0, light, OverlayTexture.DEFAULT_UV, COLOR[0], COLOR[1], COLOR[2], COLOR[3]);
+        //overlay layer rendering.
+        if (multiLayer){
+            VertexConsumer textureLayer1 = ItemRenderer.getArmorVertexConsumer(
+                    vertexConsumers, RenderLayer.getEntityCutoutNoCull(
+                            ClothesManager.getTexture(stack, 1, slim)), false, applyGlint);
+            int customLight = item.applyOverlayLight() ? item.overlayLight() : light;
+            model.render(matrices, textureLayer1, customLight, OverlayTexture.DEFAULT_UV, COLOROVERLAY[0], COLOROVERLAY[1], COLOROVERLAY[2], COLOROVERLAY[3]);
+        }
     }
 
 }

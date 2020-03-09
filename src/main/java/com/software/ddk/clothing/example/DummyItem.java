@@ -2,13 +2,25 @@ package com.software.ddk.clothing.example;
 
 import com.software.ddk.clothing.ClothingApi;
 import com.software.ddk.clothing.api.ICloth;
+import com.software.ddk.clothing.integration.TrinketsIntegration;
+import com.software.ddk.clothing.render.ClothesManager;
+import com.software.ddk.clothing.render.ClothesRenderLayer;
+import dev.emi.trinkets.api.ITrinket;
+import dev.emi.trinkets.api.SlotGroups;
+import dev.emi.trinkets.api.Slots;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
-public class DummyItem extends Item implements ICloth, DyeableItem {
+public class DummyItem extends Item implements ICloth, DyeableItem, ITrinket {
 
     public DummyItem() {
         super(new Item.Settings().group(ItemGroup.MISC));
@@ -67,4 +79,15 @@ public class DummyItem extends Item implements ICloth, DyeableItem {
         return ClothingApi.MOD_ID;
     }
 
+    @Override
+    public boolean canWearInSlot(String group, String slot) {
+        return group.equals(SlotGroups.CHEST);
+    }
+
+    @Override
+    public void render(String slot, MatrixStack matrixStack, VertexConsumerProvider vertexConsumer, int light, PlayerEntityModel<AbstractClientPlayerEntity> model, AbstractClientPlayerEntity player, float headYaw, float headPitch) {
+        //trinket render
+        //TrinketsIntegration.renderClothes(model, matrixStack, vertexConsumer, light, (LivingEntity) player);
+
+    }
 }

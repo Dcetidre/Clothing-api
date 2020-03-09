@@ -20,7 +20,7 @@ public abstract class ArmorStandEntityRendererMixin extends LivingEntityRenderer
 
     @Inject(method = "<init>", at = @At("RETURN"))
     public void onInit(EntityRenderDispatcher entityRenderDispatcher, CallbackInfo ci) {
-        this.addFeature(new ClothesArmorStandRenderLayer<>(this, new PlayerEntityModel<>(0.1F, true)));
+        this.addFeature(new ClothesArmorStandRenderLayer<>(this, new PlayerEntityModel<>(0.1F, false)));
 
     }
 
