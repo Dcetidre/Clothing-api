@@ -47,7 +47,6 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 					vertexConsumers, RenderLayer.getEntityCutoutNoCull(
 							ClothesManager.getTexture(chest, 0, slim)), false, item.applyGlint());
 
-			//todo renderizar dependiendo del layer, arm o sleeve
 			boolean[][] equipLayers = item.equipLayers();
 			boolean renderArm = equipLayers[0][1];
 			boolean renderSleeve = equipLayers[1][1];
