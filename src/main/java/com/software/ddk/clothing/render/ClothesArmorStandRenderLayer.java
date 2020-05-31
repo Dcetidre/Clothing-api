@@ -49,9 +49,10 @@ public class ClothesArmorStandRenderLayer <T extends LivingEntity, M extends Bip
         boolean applyGlint = ((ICloth) stack.getItem()).applyGlint();
         float[][] colors = ClothesManager.getColors(stack);
 
+        //todo this is ugly.
         A model = (A) ClothesManager.setPartsVisibility((A) modelBody, equipLayers);
-
         (this.getContextModel()).setAttributes(model);
+
         model.animateModel(living, limbAngle, limbDistance, tickDelta);
         model.setAngles(living, limbAngle, limbDistance, customAngle, headYaw, headPitch);
         model.rightArm.pitch = 0.0f;

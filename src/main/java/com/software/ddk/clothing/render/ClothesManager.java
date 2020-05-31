@@ -1,5 +1,6 @@
 package com.software.ddk.clothing.render;
 
+import com.google.common.collect.Maps;
 import com.software.ddk.clothing.api.ICloth;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -12,10 +13,13 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import java.util.Map;
 
 public class ClothesManager {
     public static boolean[][] DEFAULT_EQUIP = new boolean[][]{{false, false, false, false},{false, false, false, false}};
     public static final float[] DEFAULT_COLOR = new float[]{1.0f, 1.0f, 1.0f, 1.0f};
+    private static final Map<String, Identifier> CLOTHING_TEXTURE_CACHE = Maps.newHashMap();
+
 
     public static boolean isCloth(ItemStack stack){
         return !stack.isEmpty() && stack.getItem() instanceof ICloth;
@@ -47,7 +51,8 @@ public class ClothesManager {
         if (slim){
             modifier = "_slim";
         }
-        return new Identifier(cloth_modid, "textures/clothes/cloth_" + cloth_id + modifier + "_layer" + layer +".png");
+        String identifierPath = "textures/clothes/cloth_" + cloth_id + modifier + "_layer" + layer +".png";
+        return (Identifier) CLOTHING_TEXTURE_CACHE.computeIfAbsent(identifierPath, s -> new Identifier(cloth_modid, identifierPath));
     }
 
     public static float[][] getColors(ItemStack stack){
@@ -102,7 +107,6 @@ public class ClothesManager {
 
     public static void renderOnPlayer(PlayerEntityModel model, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity living, float headYaw, float headPitch, ItemStack stack, float[] COLOR, float[] COLOROVERLAY, boolean multiLayer, boolean applyGlint, boolean slim){
         ICloth item = ((ICloth) stack.getItem());
-
         //base layer rendering
         VertexConsumer textureLayer0 = ItemRenderer.getArmorVertexConsumer(
                 vertexConsumers, RenderLayer.getEntityCutoutNoCull(
